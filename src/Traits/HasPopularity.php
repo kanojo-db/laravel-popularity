@@ -1,45 +1,44 @@
 <?php
 
-namespace JordanMiguel\LaravelPopular\Traits;
+namespace KanojoDb\LaravelPopular\Traits;
 
-use JordanMiguel\LaravelPopular\Models\Visit;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+use KanojoDb\LaravelPopular\Models\Visit;
+use ReflectionClass;
 
-trait Visitable
+trait HasPopularity
 {
     /**
-     * Registrates a visit into the database if it does not exist on current day
-     * (Registers unique visitors)
-     * @return \Illuminate\Database\Eloquent\Model
+     * Registers a visit for the current page.
      */
-    public function visit($ip = '')
+    public function visit(): Visit
     {
-        if(empty($ip)){
-            $ip = request()->ip();
-        }
+        $clientIdentifier = implode('-', array(request()->ip(), Carbon::now()->format('Y-m-d'), request()->userAgent()));
+
+        $clientHash = hash('sha256', $clientIdentifier);
 
         return $this->visits()->updateOrCreate(
             [
-                'ip' => $ip,
+                'client_hash' => $clientHash,
+                'model_id' => $this->id,
+                'model_type' => (new ReflectionClass($this))->getName(),
                 'date' => Carbon::now()->toDateString(),
-                'visitable_id' => $this->id,
-                'visitable_type' => (new \ReflectionClass($this))->getName(),
             ]
         );
     }
 
     /**
      * Setting relationship
-     * @return mixed
      */
-    public function visits()
+    public function visits(): MorphMany
     {
-        return $this->morphMany(Visit::class, 'visitable');
+        return $this->morphMany(Visit::class, '');
     }
 
     /**
      * Return count of the visits in the last day
+     *
      * @return mixed
      */
     public function visitsDay()
@@ -49,6 +48,7 @@ trait Visitable
 
     /**
      * Return count of the visits in the last 7 days
+     *
      * @return mixed
      */
     public function visitsWeek()
@@ -58,6 +58,7 @@ trait Visitable
 
     /**
      * Return count of the visits in the last 30 days
+     *
      * @return mixed
      */
     public function visitsMonth()
@@ -67,6 +68,7 @@ trait Visitable
 
     /**
      * Return the count of visits since system was installed
+     *
      * @return mixed
      */
     public function visitsForever()
@@ -77,8 +79,7 @@ trait Visitable
 
     /**
      * Filter by popular in the last $days days
-     * @param $query
-     * @param $days
+     *
      * @return mixed
      */
     public function scopePopularLast($query, $days)
@@ -88,7 +89,7 @@ trait Visitable
 
     /**
      * Filter by popular in the last day
-     * @param $query
+     *
      * @return mixed
      */
     public function scopePopularDay($query)
@@ -98,7 +99,7 @@ trait Visitable
 
     /**
      * Filter by popular in the last 7 days
-     * @param $query
+     *
      * @return mixed
      */
     public function scopePopularWeek($query)
@@ -108,7 +109,7 @@ trait Visitable
 
     /**
      * Filter by popular in the last 30 days
-     * @param $query
+     *
      * @return mixed
      */
     public function scopePopularMonth($query)
@@ -118,7 +119,7 @@ trait Visitable
 
     /**
      * Filter by popular in the last 365 days
-     * @param $query
+     *
      * @return mixed
      */
     public function scopePopularYear($query)
@@ -128,7 +129,7 @@ trait Visitable
 
     /**
      * Filter by popular in a given interval date
-     * @param $query
+     *
      * @return mixed
      */
     public function scopePopularBetween($query, $from, $to)
@@ -138,7 +139,7 @@ trait Visitable
 
     /**
      * Filter by popular in all time
-     * @param $query
+     *
      * @return mixed
      */
     public function scopePopularAllTime($query)
@@ -148,9 +149,8 @@ trait Visitable
 
     /**
      * Return the visits of the model in the last ($days) days
-     * @return mixed
      */
-    public function visitsLast($days)
+    public function visitsLast($days): int
     {
         return $this->visits()
             ->where('date', '>=', Carbon::now()->subDays($days)->toDateString())
@@ -159,9 +159,8 @@ trait Visitable
 
     /**
      * Return the visits of the model in a given interval date
-     * @return mixed
      */
-    public function visitsBetween($from, $to)
+    public function visitsBetween($from, $to): int
     {
         return $this->visits()
             ->whereBetween('date', [$from, $to])
@@ -170,8 +169,7 @@ trait Visitable
 
     /**
      * Returns a Query Builder with Model ordered by popularity in the Last ($days) days
-     * @param $query
-     * @param $days
+     *
      * @return mixed
      */
     public function queryPopularLast($query, $days)
@@ -183,7 +181,7 @@ trait Visitable
 
     /**
      * Returns a Query Builder with Model ordered by popularity in a given interval date
-     * @param $query
+     *
      * @param $days
      * @return mixed
      */

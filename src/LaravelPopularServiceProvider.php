@@ -1,6 +1,6 @@
 <?php
 
-namespace JordanMiguel\LaravelPopular;
+namespace KanojoDb\LaravelPopular;
 
 use Illuminate\Support\ServiceProvider;
 
@@ -8,20 +8,16 @@ class LaravelPopularServiceProvider extends ServiceProvider
 {
     /**
      * Perform post-registration booting of services.
-     *
-     * @return void
      */
-    public function boot()
+    public function boot(): void
     {
         $this->loadMigrationsFrom(__DIR__.'/Database/Migrations');
     }
 
     /**
      * Register any package services.
-     *
-     * @return void
      */
-    public function register()
+    public function register(): void
     {
         //
     }

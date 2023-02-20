@@ -1,54 +1,66 @@
 {
-    "name": "jordanmiguel/laravel-popular",
+    "name": "kanojo-db/laravel-popularity",
     "type": "library",
-    "description": "A Laravel package to track popularity of entries(by Models) in a website at a certain time.",
+    "description": "A Laravel package to track the popularity of model entries based on recorded visits.",
     "keywords": [
-        "JordanMiguel",
+        "kanojo",
         "laravel-popular",
         "Laravel",
         "Popular",
-        "Laravel Popular"
+        "Laravel Popular",
+        "Popularity",
+        "laravel-popularity",
+        "Laravel Popularity"
     ],
-    "homepage": "https://github.com/jordanmiguel/laravel-popular",
+    "homepage": "https://github.com/kanojo-db/laravel-popularity",
     "license": "MIT",
     "authors": [
         {
             "name": "Jordan Miguel",
-            "homepage": "https://github.com/JordanMiguel",
+            "homepage": "https://github.com/KanojoDb",
+            "role": "Developer"
+        },
+        {
+            "name": "Julien Machiels",
+            "homepage": "https://github.com/MrTimscampi",
             "role": "Developer"
         }
     ],
     "require": {
-        "illuminate/support": "5.1.* || 5.2.* || 5.3.* || 5.4.* || 5.5.* || 5.6.* || 5.7.* || 5.8.* || ^6.0 || ^7.0 || ^8.0 || ^9.0",
-        "php": "~5.6|^7.2|^8.0"
+        "php": "^8.1",
+        "illuminate/support": "^9.0|^10.0"
     },
     "require-dev": {
-        "phpunit/phpunit": ">=5.4.3",
-        "squizlabs/php_codesniffer": "^2.3"
+        "laravel/pint": "^1.5",
+        "orchestra/testbench": "^7.0|^8.0",
+        "pestphp/pest": "^1.20",
+        "psalm/plugin-laravel": "^2.7"
     },
     "autoload": {
         "psr-4": {
-            "JordanMiguel\\LaravelPopular\\": "src"
+            "KanojoDb\\LaravelPopular\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "JordanMiguel\\LaravelPopular\\": "tests"
+            "KanojoDb\\LaravelPopular\\": "tests"
         }
     },
     "scripts": {
-        "test": "phpunit",
-        "check-style": "phpcs -p --standard=PSR2 --runtime-set ignore_errors_on_exit 1 --runtime-set ignore_warnings_on_exit 1 src tests",
-        "fix-style": "phpcbf -p --standard=PSR2 --runtime-set ignore_errors_on_exit 1 --runtime-set ignore_warnings_on_exit 1 src tests"
+        "format": "vendor/bin/php-cs-fixer fix --allow-risky=yes",
+        "test": "vendor/bin/pest"
     },
     "extra": {
         "laravel": {
             "providers": [
-                "JordanMiguel\\LaravelPopular\\LaravelPopularServiceProvider"
+                "KanojoDb\\LaravelPopular\\LaravelPopularServiceProvider"
             ]
         }
     },
     "config": {
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
     }
 }
